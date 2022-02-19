@@ -5,6 +5,7 @@ var formInputs = 0;
 var nodes = [];
 var parents;
 var adjLists;
+const MAX_NODES = 10;
 
 
 //D3 stuff
@@ -47,8 +48,6 @@ function Vertex(name) {
 }
 
 function DFS(item) {
-
-
     while (item != null) {
         item.visited = true;
         var index = getNodeIndex(item);
@@ -78,18 +77,61 @@ function getNodeIndex(node) {
     return -1;
 }
 
-function getNodes(no) {
-    nodes = [];
-    if (no[no.length - 1] == "") {
-        no.pop();
-    }
-    no.forEach(function (element) {
-        nodes.push(Vertex(element));
+function usedOrSpace (string) {
+    const lastToken = string.slice(-1);
+    let used = false;
+    nodes.forEach(node => {
+        if (node.name == lastToken) {
+            used = true;
+        }
     });
-    return nodes.length;
+    return lastToken == " " || used;
 }
 
-function readNode(e) {
+function addElemsToDom(){
+    var inputRef = "list".concat(nodes.length-1);
+    var label = $("<label>")
+        .attr('for', inputRef)
+        .appendTo('#graphForm');
+    label.html(
+        nodes[nodes.length-1].name,
+        $("<input type='text' value='' oninput=readEdges() />")
+        .attr("id", inputRef)
+        .attr("name", inputRef)
+        .appendTo("#graphForm")
+    );
+}
+
+function readVertices () {
+    var nodesFromForm = $('#nodes').val();
+    // Basic input sanitization
+    if (usedOrSpace(nodesFromForm) || nodes.length == MAX_NODES) {
+        $('#nodes').val(nodesFromForm.substring(0, nodesFromForm.length-1));
+        return;
+    } else {
+        $('#nodes').val(nodesFromForm + " ");
+    }
+
+    nodesFromForm = nodesFromForm.split(" ");
+    nodes.push(Vertex(nodesFromForm[nodesFromForm.length - 1]))
+
+    addElemsToDom();
+}
+
+function readEdges () {
+    adjLists = new Array(nodes.length);
+    adjLists.fill([]);
+    for (var i = 0; i < nodes.length; i++) {
+        makeAdjMatrix("list".concat(i));
+    }
+    if (nodes.length > 0) {
+        console.log("Calling DFS")
+        DFS(nodes[0]);
+        builTree();
+    }
+}
+
+function makeAdjMatrix(e) {
     var id = e.charAt(e.length - 1);
     var ref = '#'.concat(e);
     var edges = $(ref).val();
@@ -102,72 +144,6 @@ function readNode(e) {
         if (index >= 0) {
             adjLists[id] = [...adjLists[id], nodes[index]];
         }
-    }
-}
-
-function usedOrSpace (string) {
-    const lastToken = string.slice(-1);
-    let used = false;
-    nodes.forEach(node => {
-        if (node.name == lastToken) {
-            used = true;
-        }
-    });
-    return lastToken == " " || used;
-}
-
-function readNodes() {
-    var nodesFromForm = $('#nodes').val();
-    // Basic input sanitization
-    if (usedOrSpace(nodesFromForm)) {
-        $('#nodes').val(nodesFromForm.substring(0, nodesFromForm.length-1));
-        return;
-    } else {
-        $('#nodes').val(nodesFromForm + " ");
-    }
-
-    var noNodes;
-    nodesFromForm = nodesFromForm.split(" ");
-    noNodes = getNodes(nodesFromForm);
-
-    var ref = "list";
-    if (noNodes < 10 && noNodes > 0) {
-        if (noNodes > formInputs) {
-            for (var i = formInputs; i < noNodes; i++) {
-                var inputRef = ref.concat(i);
-                var label = $("<label>")
-                    .attr('for', inputRef)
-                    .appendTo('#graphForm');
-                label.html(
-                    nodes[i].name,
-                    $("<input type='text' value='' />")
-                    .attr('id', inputRef)
-                    .attr('name', inputRef)
-                    .appendTo('#graphForm')
-                    .on('input',readNodes())
-                );
-            }
-        }
-        else {
-            for (var i = formInputs; i >= noNodes; i--) {
-                var inputRef = "#".concat(ref.concat(i));
-                $(inputRef).remove();
-            }
-        }
-        adjLists = new Array(noNodes);
-        adjLists.fill([]);
-        parents = new Array(noNodes);
-        formInputs = noNodes;
-        for (var i = 0; i < formInputs; i++) {
-            readNode(ref.concat(i));
-        }
-        if (nodes.length > 0) {
-            DFS(nodes[0]);
-            builTree();
-        }
-    }
-    else {
-        console.log("Too many or too few nodes.");
     }
 }
 
