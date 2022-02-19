@@ -78,7 +78,7 @@ function getNodeIndex(node) {
     return -1;
 }
 
-function getNoNodes(no) {
+function getNodes(no) {
     nodes = [];
     if (no[no.length - 1] == "") {
         no.pop();
@@ -105,29 +105,49 @@ function readNode(e) {
     }
 }
 
+function usedOrSpace (string) {
+    const lastToken = string.slice(-1);
+    let used = false;
+    nodes.forEach(node => {
+        if (node.name == lastToken) {
+            used = true;
+        }
+    });
+    return lastToken == " " || used;
+}
+
 function readNodes() {
     var nodesFromForm = $('#nodes').val();
+    // Basic input sanitization
+    if (usedOrSpace(nodesFromForm)) {
+        $('#nodes').val(nodesFromForm.substring(0, nodesFromForm.length-1));
+        return;
+    } else {
+        $('#nodes').val(nodesFromForm + " ");
+    }
+
     var noNodes;
-    var ref = "list";
     nodesFromForm = nodesFromForm.split(" ");
-    noNodes = getNoNodes(nodesFromForm);
+    noNodes = getNodes(nodesFromForm);
+
+    var ref = "list";
     if (noNodes < 10 && noNodes > 0) {
         if (noNodes > formInputs) {
             for (var i = formInputs; i < noNodes; i++) {
                 var inputRef = ref.concat(i);
-
                 var label = $("<label>")
                     .attr('for', inputRef)
                     .appendTo('#graphForm');
                 label.html(
-                    nodes[i].name + 
+                    nodes[i].name,
                     $("<input type='text' value='' />")
                     .attr('id', inputRef)
                     .attr('name', inputRef)
                     .appendTo('#graphForm')
                     .on('input', function () {
-                    readNodes();
-                    }));
+                        readNodes();
+                    })
+                );
             }
         }
         else {
@@ -146,9 +166,7 @@ function readNodes() {
         if (nodes.length > 0) {
             DFS(nodes[0]);
             builTree();
-            
         }
-        
     }
     else {
         console.log("Too many or too few nodes.");
