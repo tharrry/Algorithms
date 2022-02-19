@@ -3,7 +3,6 @@ var btn = $('#sbmt');
 var form = $('#graphForm');
 var formInputs = 0;
 var nodes = [];
-var parents;
 var adjLists;
 
 
@@ -46,23 +45,28 @@ function Vertex(name) {
     return obj;
 }
 
-function DFS(item) {
-    while (item != null) {
+function BFS() {
+    let q = [nodes[0]];
+    console.log(q)
+    console.log(q.length)
+    console.log(q[0])
+    while (q != []) {
+        var item = q.shift();
+        console.log(item)
         item.visited = true;
         var index = getNodeIndex(item);
         if (index >= 0) {
             for (var i = 0; i < adjLists[index].length; i++) {
                 var elem = adjLists[index][i];
                 if (!elem.visited) {
+                    q.push(nodes[elem]);
                     elem.parent = item.name;
                     item.children.push(elem);
-                    DFS(elem);
                     elem.parent = item.name
                 }
             }
             item.finished = true;
         }
-        item = null;
     }
 
 }
@@ -88,6 +92,7 @@ function getNodes(no) {
 }
 
 function readNode(e) {
+    console.log("Got called");
     var id = e.charAt(e.length - 1);
     var ref = '#'.concat(e);
     var edges = $(ref).val();
@@ -156,15 +161,14 @@ function readNodes() {
         }
         adjLists = new Array(noNodes);
         adjLists.fill([]);
-        parents = new Array(noNodes);
         formInputs = noNodes;
         for (var i = 0; i < formInputs; i++) {
             readNode(ref.concat(i));
         }
-        if (nodes.length > 0) {
-            DFS(nodes[0]);
-            builTree();
-        }
+        //if (nodes.length > 0) {
+        //    BFS(nodes[0]);
+        //    builTree();
+        //}
     }
     else {
         console.log("Too many or too few nodes.");

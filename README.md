@@ -1,2 +1,2 @@
-# Algorithms - DFS
-Visualization of Depth First Search using JS and P5
+# Algorithms - BFS
+Visualization of Breadth First Search using JS and P5
