@@ -144,9 +144,7 @@ function readNodes() {
                     .attr('id', inputRef)
                     .attr('name', inputRef)
                     .appendTo('#graphForm')
-                    .on('input', function () {
-                        readNodes();
-                    })
+                    .on('input',readNodes())
                 );
             }
         }
