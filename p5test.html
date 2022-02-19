@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.min.js" integrity="sha512-C2RveGuPIWqkaLAluvoxyiaN1XYNe5ss11urhZWZYBUA9Ydgj+hfGKPcxCzTwut1/fmjEZR7Ac35f2aycT8Ogw==" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BFSjs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="description">
+        <p>Enter the vertices of the graph by names, separated by spaces. Maximum number of vertices is 10.</p>
+    </div>
+    <div id="dataInput">
+        <form id="nodesForm">
+            <label for="nodes">Vertices:</label>
+            <input type="text" id="nodes" name="nodes" oninput="readNodes();">
+        </form>
+        <form id="graphForm">
+            <p>Edges:<p>
+        </form>
+    </div>
+    <div id="container">
+        <div id="sketch">
+            <svg>
+            </svg>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <!--<div id="tree" style="width:335px; height: 160px"></div>-->
+    <!--<script src="script2.js"></script>-->
+
+</body>
+</html>
