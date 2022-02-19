@@ -138,18 +138,18 @@ function readNodes() {
         if (noNodes > formInputs) {
             for (var i = formInputs; i < noNodes; i++) {
                 var inputRef = ref.concat(i);
+                var input = $("<input type='text' value='' />")
+                .on('input', function () {
+                    readNodes();
+                });
                 var label = $("<label>")
                     .attr('for', inputRef)
                     .appendTo('#graphForm');
                 label.html(
                     nodes[i].name,
-                    $("<input type='text' value='' />")
-                    .attr('id', inputRef)
+                    input.attr('id', inputRef)
                     .attr('name', inputRef)
                     .appendTo('#graphForm')
-                    .on('input', function () {
-                        readNodes();
-                    })
                 );
             }
         }
