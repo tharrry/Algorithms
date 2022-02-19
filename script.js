@@ -47,8 +47,6 @@ function Vertex(name) {
 }
 
 function DFS(item) {
-
-
     while (item != null) {
         item.visited = true;
         var index = getNodeIndex(item);
